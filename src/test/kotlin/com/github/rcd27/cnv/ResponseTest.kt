@@ -31,7 +31,7 @@ class ResponseTest {
 
     @Test
     fun `Find value for "brand"`() {
-        testResponse.parse("brand"){
+        testResponse.parse("brand") {
             Truth.assertThat(it).isEqualTo("New World Immediate Debit")
         }
     }
