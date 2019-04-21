@@ -30,28 +30,36 @@ interface CardInfoService {
         override fun getCardInfo(cardNumber: String): CreditCard {
             val result = CreditCard("x", "y")
 
-            makeRequest(cardNumber) { responseCode ->
-                when (responseCode) {
-                    200 -> Unit
-                    400 -> throw IllegalArgumentException("Bad request for card: $cardNumber")
-                }
-            }.parse("") {
-                result.x = it
-            }.parse("") {
-                result.y = it
-            }
+            makeRequest(cardNumber,
+                { responseCode ->
+                    when (responseCode) {
+                        200 -> Unit
+                        400 -> throw IllegalArgumentException("Bad request for card: $cardNumber")
+                    }
+                },
+                { response ->
+                    response.parse("") {
+                        result.x = it
+                    }.parse("") {
+                        result.y = it
+                    }
+                })
 
             return result
         }
 
-        protected open fun makeRequest(cardNumber: String, responseCodeConsumer: (Int) -> Unit): Response {
+        protected open fun makeRequest(
+            cardNumber: String,
+            responseCodeConsumer: (Int) -> Unit,
+            responseConsumer: (Response) -> Unit
+        ) {
             val url = URL(baseUrl + cardNumber)
             val connection = (url.openConnection() as HttpURLConnection).apply {
                 requestMethod = "GET"
                 addRequestProperty("Accept-Version", "3")
             }
 
-            println("Sending 'GET' request...")
+            println("Sending 'GET' request to $url")
             println("Response code: ${connection.responseCode}")
             responseCodeConsumer(connection.responseCode)
             println("Response message: ${connection.responseMessage}")
@@ -66,7 +74,7 @@ interface CardInfoService {
             }
             `in`.close()
 
-            return Response(response.toString())
+            responseConsumer(Response(response.toString()))
         }
     }
 }

@@ -14,10 +14,19 @@ class CardInfoServiceTest {
     @Test
     fun checkConnection() {
         val check200service = object : CardInfoService.Real() {
-            override fun makeRequest(cardNumber: String, responseCodeConsumer: (Int) -> Unit) {
-                super.makeRequest(cardNumber) { responseCode ->
-                    Truth.assertThat(responseCode).isEqualTo(200)
-                }
+            override fun makeRequest(
+                cardNumber: String,
+                responseCodeConsumer: (Int) -> Unit,
+                responseConsumer: (Response) -> Unit
+            ) {
+                super.makeRequest(
+                    cardNumber,
+                    { responseCode ->
+                        Truth.assertThat(responseCode).isEqualTo(200)
+                    },
+                    {
+                        // TODO: Handle response
+                    })
             }
         }
         check200service.getCardInfo(validCardNumber)
