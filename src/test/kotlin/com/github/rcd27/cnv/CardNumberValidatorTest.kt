@@ -33,35 +33,35 @@ class CardNumberValidatorTest {
     }
 
     @Test
-    fun `contains no chars`() {
+    fun `Contains no chars`() {
         val cardNumber = validCardNumber.replace('0', 'x')
         val validationResult = validator.isValid(cardNumber)
         Truth.assertThat(validationResult).isFalse()
     }
 
     @Test
-    fun `contains no whitespaces`() {
+    fun `Contains no whitespaces`() {
         val cardNumber = validCardNumber.replace('5', ' ')
         val validationResult = validator.isValid(cardNumber)
         Truth.assertThat(validationResult).isFalse()
     }
 
     @Test
-    fun `contains no non-digits`() {
+    fun `Contains zero non-digits`() {
         val cardNumber = validCardNumber.replace('5', '+').replace('6', '-')
         val validationResult = validator.isValid(cardNumber)
         Truth.assertThat(validationResult).isFalse()
     }
 
     @Test
-    fun `not starting with 0`() {
+    fun `Not starting with 0`() {
         val cardNumber = validCardNumber.replaceFirst('5', '0')
         val validationResult = validator.isValid(cardNumber)
         Truth.assertThat(validationResult).isFalse()
     }
 
     @Test
-    fun `contains between 12 and 19 digits`() {
+    fun `Nontains between 12 and 19 digits`() {
         val validationResultLess = validator.isValid("55369137797")
         Truth.assertThat(validationResultLess)
             .isFalse()

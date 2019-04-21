@@ -23,7 +23,7 @@ class ResponseTest {
     }
 
     @Test
-    fun `Find value for scheme`() {
+    fun `Find value for "scheme"`() {
         testResponse.parse("scheme") {
             Truth.assertThat(it).isEqualTo("mastercard")
         }
