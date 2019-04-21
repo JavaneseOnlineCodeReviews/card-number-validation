@@ -18,7 +18,6 @@ import kotlin.properties.Delegates
  */
 
 class CardNumberValidatorTest {
-    private val validCardNumber = "5536913779705934"
 
     private var validator: CardNumberValidator by Delegates.notNull()
 
