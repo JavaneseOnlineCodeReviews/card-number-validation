@@ -12,7 +12,7 @@ import org.junit.Test
 class CardInfoServiceTest {
 
     @Test
-    fun checkConnection() {
+    fun `Check connection for 200 response`() {
         val check200service = object : CardInfoService.Real() {
             override fun makeRequest(
                 cardNumber: String,
@@ -31,5 +31,17 @@ class CardInfoServiceTest {
             }
         }
         check200service.getCardInfo(validCardNumber)
+    }
+
+    @Test
+    fun `Check Card info handling`() {
+        val realService = CardInfoService.Real()
+        val cardInfo = realService.getCardInfo(validCardNumber)
+        Truth.assertThat(cardInfo).isEqualTo(
+            CardInfoService.CreditCard(
+                "mastercard",
+                "New World Immediate Debit"
+            )
+        )
     }
 }

@@ -8,18 +8,25 @@ import java.net.URL
 interface CardInfoService {
     val baseUrl: String
 
+    /**
+     *  Connects to [baseUrl], makes a simple GET request and parses response body
+     *  in search of JSON pairs for 'scheme' and 'brand' keys.
+     *
+     *  @param [cardNumber] String representation of the cad number
+     *  @return a [CreditCard] data transfer object
+     */
     fun getCardInfo(cardNumber: String): CreditCard
 
     data class CreditCard(
-        var x: String,
-        var y: String
+        var scheme: String?,
+        var brand: String?
     )
 
     open class Real : CardInfoService {
         override val baseUrl: String = "https://lookup.binlist.net/"
 
         override fun getCardInfo(cardNumber: String): CreditCard {
-            val result = CreditCard("x", "y")
+            val result = CreditCard(null, null)
 
             makeRequest(cardNumber,
                 { responseCode ->
@@ -29,10 +36,10 @@ interface CardInfoService {
                     }
                 },
                 { response ->
-                    response.parse("") {
-                        result.x = it
-                    }.parse("") {
-                        result.y = it
+                    response.parse("scheme") {
+                        result.scheme = it
+                    }.parse("brand") {
+                        result.brand = it
                     }
                 })
 

@@ -28,4 +28,11 @@ class ResponseTest {
             Truth.assertThat(it).isEqualTo("mastercard")
         }
     }
+
+    @Test
+    fun `Find value for "brand"`() {
+        testResponse.parse("brand"){
+            Truth.assertThat(it).isEqualTo("New World Immediate Debit")
+        }
+    }
 }
