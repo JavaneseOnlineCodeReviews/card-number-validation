@@ -5,15 +5,6 @@ import java.io.InputStreamReader
 import java.net.HttpURLConnection
 import java.net.URL
 
-
-class Response(private val responseBody: String) {
-
-    fun parse(field: String, resultConsumer: (String) -> Unit): Response {
-        resultConsumer("Parsed Field")
-        return this
-    }
-}
-
 interface CardInfoService {
     val baseUrl: String
 
@@ -74,7 +65,7 @@ interface CardInfoService {
             }
             `in`.close()
 
-            responseConsumer(Response(response.toString()))
+            responseConsumer(Response.Real(response.toString()))
         }
     }
 }

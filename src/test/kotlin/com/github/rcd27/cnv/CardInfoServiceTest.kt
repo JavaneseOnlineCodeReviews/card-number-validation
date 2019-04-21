@@ -25,7 +25,8 @@ class CardInfoServiceTest {
                         Truth.assertThat(responseCode).isEqualTo(200)
                     },
                     {
-                        // TODO: Handle response
+                        // not handling response for this test case
+                        println("Response body for check200service: ${it.responseBody}")
                     })
             }
         }
