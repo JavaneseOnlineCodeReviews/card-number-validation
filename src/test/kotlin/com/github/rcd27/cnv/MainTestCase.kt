@@ -19,75 +19,71 @@ import kotlin.properties.Delegates
 
 class MainTestCase {
     private val validCardNumber = "5536913779705934"
-    private val invalidCardNumberLessThanTwelveDigits = "55369137797"
-    private val invalidCardNumberMoreThanNineteenDigits = "55369137797059342524"
 
-    private var app: CNV by Delegates.notNull()
+    private var app: CardNumberValidator by Delegates.notNull()
 
     @Before
     fun setUp() {
-        app = CNV()
+        app = CardNumberValidator.Real()
     }
 
     @Test
     fun main() {
-        val validationResult = app.validate(validCardNumber)
-        Truth.assertThat(validationResult).isEqualTo(ValidationResult.Success)
+        val validationResult = app.isValid(validCardNumber)
+        Truth.assertThat(validationResult).isTrue()
     }
 
     @Test
     fun `contains no chars`() {
         val cardNumber = validCardNumber.replace('0', 'x')
-        val validationResult = app.validate(cardNumber)
-        Truth.assertThat(validationResult).isInstanceOf(ValidationResult.Error(IllegalArgumentException())::class.java)
+        val validationResult = app.isValid(cardNumber)
+        Truth.assertThat(validationResult).isFalse()
     }
 
     @Test
     fun `contains no whitespaces`() {
         val cardNumber = validCardNumber.replace('5', ' ')
-        val validationResult = app.validate(cardNumber)
-        Truth.assertThat(validationResult).isInstanceOf(ValidationResult.Error(IllegalArgumentException())::class.java)
+        val validationResult = app.isValid(cardNumber)
+        Truth.assertThat(validationResult).isFalse()
     }
 
     @Test
     fun `contains no non-digits`() {
         val cardNumber = validCardNumber.replace('5', '+').replace('6', '-')
-        val validationResult = app.validate(cardNumber)
-        Truth.assertThat(validationResult).isInstanceOf(ValidationResult.Error(IllegalArgumentException())::class.java)
+        val validationResult = app.isValid(cardNumber)
+        Truth.assertThat(validationResult).isFalse()
     }
 
     @Test
     fun `not starting with 0`() {
         val cardNumber = validCardNumber.replaceFirst('5', '0')
-        val validationResult = app.validate(cardNumber)
-        Truth.assertThat(validationResult).isInstanceOf(ValidationResult.Error(IllegalArgumentException())::class.java)
+        val validationResult = app.isValid(cardNumber)
+        Truth.assertThat(validationResult).isFalse()
     }
 
     @Test
     fun `contains between 12 and 19 digits`() {
-        val cardNumberLess = invalidCardNumberLessThanTwelveDigits
-        val validationResultLess = app.validate(cardNumberLess)
+        val validationResultLess = app.isValid("55369137797")
         Truth.assertThat(validationResultLess)
-            .isInstanceOf(ValidationResult.Error(IllegalArgumentException())::class.java)
+            .isFalse()
 
         val cardNumberBetween = validCardNumber
-        val validationResultBetween = app.validate(cardNumberBetween)
-        Truth.assertThat(validationResultBetween).isInstanceOf(ValidationResult.Success::class.java)
+        val validationResultBetween = app.isValid(cardNumberBetween)
+        Truth.assertThat(validationResultBetween).isTrue()
 
-        val cardNumberMore = invalidCardNumberMoreThanNineteenDigits
-        val validationResultMore = app.validate(cardNumberMore)
+        val validationResultMore = app.isValid("55369137797059342524")
         Truth.assertThat(validationResultMore)
-            .isInstanceOf(ValidationResult.Error(IllegalArgumentException())::class.java)
+            .isFalse()
     }
 
     @Test
     fun `Luhn check for valid card number`() {
-        Truth.assertThat(app.validate(validCardNumber)).isInstanceOf(ValidationResult.Success::class.java)
+        Truth.assertThat(app.isValid(validCardNumber)).isTrue()
     }
 
     @Test
     fun `Luhn check for invalid card number`() {
-        Truth.assertThat(app.validate("5536913779705933"))
-            .isInstanceOf(ValidationResult.Error(IllegalArgumentException())::class.java)
+        Truth.assertThat(app.isValid("5536913779705933"))
+            .isFalse()
     }
 }
