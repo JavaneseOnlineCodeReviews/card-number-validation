@@ -17,73 +17,73 @@ import kotlin.properties.Delegates
  * which you consider necessary to return to the user.
  */
 
-class MainTestCase {
+class CardNumberValidatorTest {
     private val validCardNumber = "5536913779705934"
 
-    private var app: CardNumberValidator by Delegates.notNull()
+    private var validator: CardNumberValidator by Delegates.notNull()
 
     @Before
     fun setUp() {
-        app = CardNumberValidator.Real()
+        validator = CardNumberValidator.Real()
     }
 
     @Test
     fun main() {
-        val validationResult = app.isValid(validCardNumber)
+        val validationResult = validator.isValid(validCardNumber)
         Truth.assertThat(validationResult).isTrue()
     }
 
     @Test
     fun `contains no chars`() {
         val cardNumber = validCardNumber.replace('0', 'x')
-        val validationResult = app.isValid(cardNumber)
+        val validationResult = validator.isValid(cardNumber)
         Truth.assertThat(validationResult).isFalse()
     }
 
     @Test
     fun `contains no whitespaces`() {
         val cardNumber = validCardNumber.replace('5', ' ')
-        val validationResult = app.isValid(cardNumber)
+        val validationResult = validator.isValid(cardNumber)
         Truth.assertThat(validationResult).isFalse()
     }
 
     @Test
     fun `contains no non-digits`() {
         val cardNumber = validCardNumber.replace('5', '+').replace('6', '-')
-        val validationResult = app.isValid(cardNumber)
+        val validationResult = validator.isValid(cardNumber)
         Truth.assertThat(validationResult).isFalse()
     }
 
     @Test
     fun `not starting with 0`() {
         val cardNumber = validCardNumber.replaceFirst('5', '0')
-        val validationResult = app.isValid(cardNumber)
+        val validationResult = validator.isValid(cardNumber)
         Truth.assertThat(validationResult).isFalse()
     }
 
     @Test
     fun `contains between 12 and 19 digits`() {
-        val validationResultLess = app.isValid("55369137797")
+        val validationResultLess = validator.isValid("55369137797")
         Truth.assertThat(validationResultLess)
             .isFalse()
 
         val cardNumberBetween = validCardNumber
-        val validationResultBetween = app.isValid(cardNumberBetween)
+        val validationResultBetween = validator.isValid(cardNumberBetween)
         Truth.assertThat(validationResultBetween).isTrue()
 
-        val validationResultMore = app.isValid("55369137797059342524")
+        val validationResultMore = validator.isValid("55369137797059342524")
         Truth.assertThat(validationResultMore)
             .isFalse()
     }
 
     @Test
     fun `Luhn check for valid card number`() {
-        Truth.assertThat(app.isValid(validCardNumber)).isTrue()
+        Truth.assertThat(validator.isValid(validCardNumber)).isTrue()
     }
 
     @Test
     fun `Luhn check for invalid card number`() {
-        Truth.assertThat(app.isValid("5536913779705933"))
+        Truth.assertThat(validator.isValid("5536913779705933"))
             .isFalse()
     }
 }
