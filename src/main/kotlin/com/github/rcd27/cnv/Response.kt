@@ -18,7 +18,7 @@ interface Response {
         override fun parse(field: String, resultConsumer: (String) -> Unit): Response {
             val pattern = Pattern.compile("(\"$field\"):(\"[\\w\\s]+\")")
             val matcher = pattern.matcher(responseBody)
-            while (matcher.find()) {
+            while (matcher.find()) { // FIXME: if there is more than 1 match, all results but last will be overridden
                 // FIXME: if there is no match, receiver doesn't take any value and we have false positive test
                 resultConsumer(matcher.group(2).replace("\"", ""))
             }
